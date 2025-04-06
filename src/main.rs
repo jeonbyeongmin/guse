@@ -45,17 +45,20 @@ enum Commands {
     /// Switch to a profile
     Switch {
         /// Profile name to use (e.g., personal, work)
-        profile: String,
+        #[arg(required = false)]
+        profile: Option<String>,
     },
     /// Update an existing profile
     Update {
         /// Profile name to update
-        profile: String,
+        #[arg(required = false)]
+        profile: Option<String>,
     },
     /// Delete a profile
     Delete {
         /// Profile name to delete
-        profile: String,
+        #[arg(required = false)]
+        profile: Option<String>,
     },
 }
 
@@ -105,22 +108,55 @@ fn main() -> Result<(), GitSwitchError> {
             return Ok(());
         }
         Commands::Delete { profile } => {
-            info!("Deleting profile: {}", profile);
+            let profiles: Vec<_> = config.load_profiles()?.into_iter().collect();
+            if profiles.is_empty() {
+                println!("{}", "❌ No profiles found.".red().bold());
+                return Ok(());
+            }
+
+            let profile_names: Vec<String> =
+                profiles.iter().map(|(name, _)| name.clone()).collect();
+            let selection = if profile.is_none() {
+                Select::new()
+                    .with_prompt("Select profile to delete")
+                    .items(&profile_names)
+                    .default(0)
+                    .interact()?
+            } else {
+                let profile_name = profile.as_ref().unwrap();
+                match profile_names.iter().position(|x| x == profile_name) {
+                    Some(idx) => idx,
+                    None => {
+                        println!(
+                            "{}",
+                            format!("❌ Profile '{}' not found.", profile_name)
+                                .red()
+                                .bold()
+                        );
+                        return Ok(());
+                    }
+                }
+            };
+
+            let profile_to_delete = &profile_names[selection];
+            info!("Deleting profile: {}", profile_to_delete);
             println!(
                 "\n{}",
-                format!("🗑️  Deleting profile '{}'", profile).red().bold()
+                format!("🗑️  Deleting profile '{}'", profile_to_delete)
+                    .red()
+                    .bold()
             );
             println!("{}", "=".repeat(40).red());
 
             // Backup configuration file
             backup_config_file(&config.path)?;
 
-            config.delete_profile(profile)?;
+            config.delete_profile(profile_to_delete)?;
 
-            info!("Profile deletion completed: {}", profile);
+            info!("Profile deletion completed: {}", profile_to_delete);
             println!(
                 "\n{}",
-                format!("✅ Profile '{}' deleted successfully", profile)
+                format!("✅ Profile '{}' deleted successfully", profile_to_delete)
                     .green()
                     .bold()
             );
@@ -169,18 +205,80 @@ fn main() -> Result<(), GitSwitchError> {
             return Ok(());
         }
         Commands::Update { profile } => {
-            update_profile_interactively(&profile, &config)?;
+            let profiles: Vec<_> = config.load_profiles()?.into_iter().collect();
+            if profiles.is_empty() {
+                println!("{}", "❌ No profiles found.".red().bold());
+                return Ok(());
+            }
+
+            let profile_names: Vec<String> =
+                profiles.iter().map(|(name, _)| name.clone()).collect();
+            let selection = if profile.is_none() {
+                Select::new()
+                    .with_prompt("Select profile to update")
+                    .items(&profile_names)
+                    .default(0)
+                    .interact()?
+            } else {
+                let profile_name = profile.as_ref().unwrap();
+                match profile_names.iter().position(|x| x == profile_name) {
+                    Some(idx) => idx,
+                    None => {
+                        println!(
+                            "{}",
+                            format!("❌ Profile '{}' not found.", profile_name)
+                                .red()
+                                .bold()
+                        );
+                        return Ok(());
+                    }
+                }
+            };
+
+            let profile_to_update = &profile_names[selection];
+            update_profile_interactively(profile_to_update, &config)?;
             return Ok(());
         }
         Commands::Switch { profile } => {
-            info!("Loading profile '{}'", profile);
+            let profiles: Vec<_> = config.load_profiles()?.into_iter().collect();
+            if profiles.is_empty() {
+                println!("{}", "❌ No profiles found.".red().bold());
+                return Ok(());
+            }
+
+            let profile_names: Vec<String> =
+                profiles.iter().map(|(name, _)| name.clone()).collect();
+            let selection = if profile.is_none() {
+                Select::new()
+                    .with_prompt("Select profile to switch to")
+                    .items(&profile_names)
+                    .default(0)
+                    .interact()?
+            } else {
+                let profile_name = profile.as_ref().unwrap();
+                match profile_names.iter().position(|x| x == profile_name) {
+                    Some(idx) => idx,
+                    None => {
+                        println!(
+                            "{}",
+                            format!("❌ Profile '{}' not found.", profile_name)
+                                .red()
+                                .bold()
+                        );
+                        return Ok(());
+                    }
+                }
+            };
+
+            let profile_to_switch = &profile_names[selection];
+            info!("Loading profile '{}'", profile_to_switch);
             println!(
                 "{} {}",
                 "🔄".blue().bold(),
-                format!("Loading profile '{}'...", profile).blue()
+                format!("Loading profile '{}'...", profile_to_switch).blue()
             );
 
-            let profile_data = load_profile(profile, &config)?;
+            let profile_data = load_profile(profile_to_switch, &config)?;
 
             info!("Starting Git configuration change");
             println!(
