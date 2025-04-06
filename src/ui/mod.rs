@@ -52,19 +52,4 @@ impl UI {
         table.printstd();
         println!();
     }
-
-    pub fn print_ssh_hosts(hosts: &[String]) {
-        println!("\n{}", "🔑 SSH Host List:".cyan().bold());
-        println!("{}", "=".repeat(40).cyan());
-
-        let mut table = Table::new();
-        table.add_row(row!["Host"]);
-
-        for host in hosts {
-            table.add_row(row![host]);
-        }
-
-        table.printstd();
-        println!();
-    }
 }
