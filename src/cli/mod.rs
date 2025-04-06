@@ -1,6 +1,7 @@
 pub mod add;
 pub mod delete;
 pub mod list;
+pub mod list_ssh;
 pub mod show;
 pub mod switch;
 pub mod update;
@@ -28,6 +29,12 @@ pub enum Commands {
 
     #[command(name = "list", about = "Show all saved Git profiles")]
     List(list::ListCommand),
+
+    #[command(
+        name = "list-ssh",
+        about = "List configured SSH hosts from ~/.ssh/config"
+    )]
+    ListSsh(list_ssh::ListSshCommand),
 
     #[command(name = "show", about = "Show current Git configuration")]
     Show(show::ShowCommand),

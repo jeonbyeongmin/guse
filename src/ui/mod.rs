@@ -8,7 +8,6 @@ pub struct UI;
 impl UI {
     pub fn print_profile_table(profile: &Profile, github_user: &str, repo_name: &str) {
         let mut table = Table::new();
-        table.add_row(row!["Item", "Value"]);
         table.add_row(row!["Name", &profile.name]);
         table.add_row(row!["Email", &profile.email]);
         table.add_row(row!["SSH Host", &profile.ssh_host]);
@@ -22,7 +21,6 @@ impl UI {
         println!("{}", "=".repeat(40).cyan());
 
         let mut table = Table::new();
-        table.add_row(row!["Item", "Value"]);
         table.add_row(row!["Name", &config.user_name]);
         table.add_row(row!["Email", &config.user_email]);
 

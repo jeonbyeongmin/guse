@@ -22,6 +22,7 @@ fn main() -> Result<(), GuseError> {
         Commands::Add(cmd) => cmd.execute(&config),
         Commands::Delete(cmd) => cmd.execute(&config),
         Commands::List(cmd) => cmd.execute(&config),
+        Commands::ListSsh(cmd) => cmd.execute(),
         Commands::Show(cmd) => cmd.execute(),
         Commands::Switch(cmd) => cmd.execute(&config),
         Commands::Update(cmd) => cmd.execute(&config),
