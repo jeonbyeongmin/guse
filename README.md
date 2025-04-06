@@ -121,6 +121,12 @@ guse list-ssh
 guse update work
 ```
 
+### Delete a profile
+
+```bash
+guse delete work
+```
+
 <br>
 
 ## 🧠 How It Works

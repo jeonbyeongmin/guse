@@ -52,6 +52,11 @@ enum Commands {
         /// Profile name to update
         profile: String,
     },
+    /// Delete a profile
+    Delete {
+        /// Profile name to delete
+        profile: String,
+    },
 }
 
 type ProfileMap = HashMap<String, Profile>;
@@ -97,6 +102,28 @@ fn main() -> Result<(), GitSwitchError> {
         Commands::List => {
             let profiles: Vec<_> = config.load_profiles()?.into_iter().collect();
             UI::print_profiles(&profiles);
+            return Ok(());
+        }
+        Commands::Delete { profile } => {
+            info!("Deleting profile: {}", profile);
+            println!(
+                "\n{}",
+                format!("🗑️  Deleting profile '{}'", profile).red().bold()
+            );
+            println!("{}", "=".repeat(40).red());
+
+            // Backup configuration file
+            backup_config_file(&config.path)?;
+
+            config.delete_profile(profile)?;
+
+            info!("Profile deletion completed: {}", profile);
+            println!(
+                "\n{}",
+                format!("✅ Profile '{}' deleted successfully", profile)
+                    .green()
+                    .bold()
+            );
             return Ok(());
         }
         Commands::Show => {

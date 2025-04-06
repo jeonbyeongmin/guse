@@ -95,6 +95,16 @@ impl Config {
         Ok(())
     }
 
+    pub fn delete_profile(&self, name: &str) -> Result<(), ConfigError> {
+        let mut profiles = self.load_profiles()?;
+        if !profiles.contains_key(name) {
+            return Err(ConfigError(format!("Profile '{}' does not exist.", name)));
+        }
+        profiles.remove(name);
+        self.save_profiles(&profiles)?;
+        Ok(())
+    }
+
     fn backup(&self) -> Result<(), ConfigError> {
         if self.path.exists() {
             let timestamp = SystemTime::now()
