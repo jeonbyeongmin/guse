@@ -1,7 +1,7 @@
 use std::fmt;
 
 #[derive(Debug)]
-pub enum GitSwitchError {
+pub enum GuseError {
     IoError(std::io::Error),
     TomlError(toml::de::Error),
     GitError(String),
@@ -10,53 +10,53 @@ pub enum GitSwitchError {
     DialoguerError(dialoguer::Error),
 }
 
-impl fmt::Display for GitSwitchError {
+impl fmt::Display for GuseError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            GitSwitchError::IoError(e) => write!(f, "IO Error: {}", e),
-            GitSwitchError::TomlError(e) => write!(f, "TOML Parsing Error: {}", e),
-            GitSwitchError::GitError(e) => write!(f, "Git Command Error: {}", e),
-            GitSwitchError::ValidationError(e) => write!(f, "Validation Error: {}", e),
-            GitSwitchError::ConfigError(e) => write!(f, "Configuration Error: {}", e),
-            GitSwitchError::DialoguerError(e) => write!(f, "Interactive Input Error: {}", e),
+            GuseError::IoError(e) => write!(f, "IO Error: {}", e),
+            GuseError::TomlError(e) => write!(f, "TOML Parsing Error: {}", e),
+            GuseError::GitError(e) => write!(f, "Git Command Error: {}", e),
+            GuseError::ValidationError(e) => write!(f, "Validation Error: {}", e),
+            GuseError::ConfigError(e) => write!(f, "Configuration Error: {}", e),
+            GuseError::DialoguerError(e) => write!(f, "Interactive Input Error: {}", e),
         }
     }
 }
 
-impl std::error::Error for GitSwitchError {}
+impl std::error::Error for GuseError {}
 
-impl From<std::io::Error> for GitSwitchError {
+impl From<std::io::Error> for GuseError {
     fn from(err: std::io::Error) -> Self {
-        GitSwitchError::IoError(err)
+        GuseError::IoError(err)
     }
 }
 
-impl From<toml::de::Error> for GitSwitchError {
+impl From<toml::de::Error> for GuseError {
     fn from(err: toml::de::Error) -> Self {
-        GitSwitchError::TomlError(err)
+        GuseError::TomlError(err)
     }
 }
 
-impl From<toml::ser::Error> for GitSwitchError {
+impl From<toml::ser::Error> for GuseError {
     fn from(err: toml::ser::Error) -> Self {
-        GitSwitchError::ConfigError(format!("TOML Serialization Error: {}", err))
+        GuseError::ConfigError(format!("TOML Serialization Error: {}", err))
     }
 }
 
-impl From<crate::config::ConfigError> for GitSwitchError {
+impl From<crate::config::ConfigError> for GuseError {
     fn from(err: crate::config::ConfigError) -> Self {
-        GitSwitchError::ConfigError(err.to_string())
+        GuseError::ConfigError(err.to_string())
     }
 }
 
-impl From<crate::git::GitError> for GitSwitchError {
+impl From<crate::git::GitError> for GuseError {
     fn from(err: crate::git::GitError) -> Self {
-        GitSwitchError::GitError(err.to_string())
+        GuseError::GitError(err.to_string())
     }
 }
 
-impl From<dialoguer::Error> for GitSwitchError {
+impl From<dialoguer::Error> for GuseError {
     fn from(err: dialoguer::Error) -> Self {
-        GitSwitchError::DialoguerError(err)
+        GuseError::DialoguerError(err)
     }
 }

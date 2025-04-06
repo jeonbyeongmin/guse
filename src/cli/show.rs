@@ -1,7 +1,7 @@
 use clap::Parser;
 use colored::*;
 
-use crate::error::GitSwitchError;
+use crate::error::GuseError;
 use crate::git::Git;
 use crate::ui::UI;
 
@@ -10,7 +10,7 @@ use crate::ui::UI;
 pub struct ShowCommand;
 
 impl ShowCommand {
-    pub fn execute(&self) -> Result<(), GitSwitchError> {
+    pub fn execute(&self) -> Result<(), GuseError> {
         let git = Git::new();
         let current_config = git.get_current_config()?;
 

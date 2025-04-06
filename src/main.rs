@@ -10,9 +10,9 @@ use env_logger;
 
 use crate::cli::{Args, Commands};
 use crate::config::Config;
-use crate::error::GitSwitchError;
+use crate::error::GuseError;
 
-fn main() -> Result<(), GitSwitchError> {
+fn main() -> Result<(), GuseError> {
     env_logger::init();
 
     let args = Args::parse();

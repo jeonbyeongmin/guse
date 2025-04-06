@@ -3,7 +3,7 @@ use colored::*;
 use dialoguer::Select;
 
 use crate::config::Config;
-use crate::error::GitSwitchError;
+use crate::error::GuseError;
 use crate::utils::backup_config_file;
 
 #[derive(Parser, Debug)]
@@ -18,7 +18,7 @@ pub struct DeleteCommand {
 }
 
 impl DeleteCommand {
-    pub fn execute(&self, config: &Config) -> Result<(), GitSwitchError> {
+    pub fn execute(&self, config: &Config) -> Result<(), GuseError> {
         use log::info;
 
         let profiles: Vec<_> = config.load_profiles()?.into_iter().collect();

@@ -2,7 +2,7 @@ use clap::Parser;
 use colored::*;
 
 use crate::config::Config;
-use crate::error::GitSwitchError;
+use crate::error::GuseError;
 use crate::utils::{backup_config_file, get_ssh_config_path, validate_email, validate_ssh_host};
 
 #[derive(Parser, Debug)]
@@ -14,7 +14,7 @@ pub struct AddCommand {
 }
 
 impl AddCommand {
-    pub fn execute(&self, config: &Config) -> Result<(), GitSwitchError> {
+    pub fn execute(&self, config: &Config) -> Result<(), GuseError> {
         use dialoguer::Input;
         use log::info;
         use std::fs;

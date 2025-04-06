@@ -3,7 +3,7 @@ use colored::*;
 use dialoguer::Select;
 
 use crate::config::Config;
-use crate::error::GitSwitchError;
+use crate::error::GuseError;
 use crate::git::Git;
 use crate::ui::UI;
 
@@ -19,7 +19,7 @@ pub struct SwitchCommand {
 }
 
 impl SwitchCommand {
-    pub fn execute(&self, config: &Config) -> Result<(), GitSwitchError> {
+    pub fn execute(&self, config: &Config) -> Result<(), GuseError> {
         use log::info;
 
         let mut git = Git::new();
