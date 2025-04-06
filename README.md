@@ -89,6 +89,10 @@ You'll be prompted to enter:
 ### Switch to a profile
 
 ```bash
+# Select profile interactively
+guse switch
+
+# Specify profile name directly
 guse switch personal
 ```
 
@@ -118,12 +122,20 @@ guse list-ssh
 ### Update a profile
 
 ```bash
+# Select profile interactively
+guse update
+
+# Specify profile name directly
 guse update work
 ```
 
 ### Delete a profile
 
 ```bash
+# Select profile interactively
+guse delete
+
+# Specify profile name directly
 guse delete work
 ```
 
