@@ -10,7 +10,8 @@ use crate::ui::UI;
 pub struct ShowCommand;
 
 impl ShowCommand {
-    pub fn execute(&self, git: &Git) -> Result<(), GitSwitchError> {
+    pub fn execute(&self) -> Result<(), GitSwitchError> {
+        let git = Git::new();
         let current_config = git.get_current_config()?;
 
         if current_config.remote_url.is_empty() {

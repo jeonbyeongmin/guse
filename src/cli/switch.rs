@@ -19,9 +19,10 @@ pub struct SwitchCommand {
 }
 
 impl SwitchCommand {
-    pub fn execute(&self, config: &Config, git: &mut Git) -> Result<(), GitSwitchError> {
+    pub fn execute(&self, config: &Config) -> Result<(), GitSwitchError> {
         use log::info;
 
+        let mut git = Git::new();
         let profiles: Vec<_> = config.load_profiles()?.into_iter().collect();
         if profiles.is_empty() {
             println!("{}", "❌ No profiles found.".red().bold());
