@@ -55,7 +55,11 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          path: binaries
+          pattern: guse-*
+
+      - name: List artifacts
+        run: ls -la binaries/
 
       - name: Create Release
         id: create_release
@@ -63,10 +67,31 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
+          body: |
+            ## Binaries
+
+            - `guse-linux` - Linux binary
+            - `guse-windows.exe` - Windows binary
+            - `guse-macos` - macOS binary
+
+            ## Installation
+
+            ### macOS/Linux
+            ```bash
+            curl -L -o guse https://github.com/${{ github.repository }}/releases/latest/download/guse-${{ matrix.os == 'macos-latest' && 'macos' || 'linux' }}
+            chmod +x guse
+            sudo mv guse /usr/local/bin/  # optional
+            ```
+
+            ### Windows
+            1. Download `guse-windows.exe` from the [latest release page](https://github.com/${{ github.repository }}/releases/latest)
+            2. Save the file to your desired location
+            3. Rename to `guse.exe` (optional)
+            4. Add to PATH (optional)
           files: |
-            artifacts/guse-linux
-            artifacts/guse-windows.exe
-            artifacts/guse-macos
+            binaries/guse-linux
+            binaries/guse-windows.exe
+            binaries/guse-macos
           draft: false
           prerelease: false
           generate_release_notes: true
