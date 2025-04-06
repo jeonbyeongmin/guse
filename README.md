@@ -10,7 +10,7 @@ It handles `user.name`, `user.email`, and even your SSH remote configuration aut
 ## Managing Git Identities
 
 Working across different Git repositories often requires switching between multiple identities.  
-Manually updating `user.name`, `user.email`, and remote URLs can be repetitive and error-prone.  
+Manually updating `user.name`, `user.email`, and remote URLs can be repetitive and error-prone.
 
 `guse` automates these steps using profile-based configuration, so each repository uses the correct settings without manual edits.
 
@@ -18,10 +18,10 @@ Manually updating `user.name`, `user.email`, and remote URLs can be repetitive a
 
 ## ✨ Features
 
-- 🔁 Switch Git `user.name` / `user.email` per repository  
-- 🔐 Automatically update `git remote` with SSH host  
-- 📝 Add, update, and remove profiles interactively  
-- 💾 Profile settings stored in a simple TOML file  
+- 🔁 Switch Git `user.name` / `user.email` per repository
+- 🔐 Automatically update `git remote` with SSH host
+- 📝 Add, update, and remove profiles interactively
+- 💾 Profile settings stored in a simple TOML file
 
 <br>
 
@@ -29,22 +29,45 @@ Manually updating `user.name`, `user.email`, and remote URLs can be repetitive a
 
 ### Install
 
+#### macOS
+
 ```bash
-cargo install --path .
+# Download latest release
+curl -L -o guse https://github.com/jeonbyeongmin/guse/releases/latest/download/guse-macos
+
+# Make it executable
+chmod +x guse
+
+# Add to PATH (optional)
+sudo mv guse /usr/local/bin/
 ```
 
-Or build and copy manually:
+#### Windows
+
+1. Download `guse-windows.exe` from the [latest release page](https://github.com/jeonbyeongmin/guse/releases/latest)
+2. Save the file to your desired location
+3. Rename the file to `guse.exe` (optional)
+4. Add the directory to your system's PATH environment variable (optional)
+
+#### Linux
 
 ```bash
-cargo build --release
-cp ./target/release/guse ~/bin/guse
+# Download latest release
+curl -L -o guse https://github.com/jeonbyeongmin/guse/releases/latest/download/guse-linux
+
+# Make it executable
+chmod +x guse
+
+# Add to PATH (optional)
+sudo mv guse /usr/local/bin/
 ```
 
-Add to your shell PATH if needed:
+## Usage
+
+After installation, you can run the following command in your terminal:
 
 ```bash
-echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+guse
 ```
 
 <br>
@@ -57,13 +80,11 @@ source ~/.zshrc
 guse add personal
 ```
 
-You’ll be prompted to enter:
+You'll be prompted to enter:
 
-- Git user.name  
-- Git user.email  
-- SSH host alias (auto-detected from `~/.ssh/config`)  
-
-<br>
+- Git user.name
+- Git user.email
+- SSH host alias (auto-detected from `~/.ssh/config`)
 
 ### Switch to a profile
 
@@ -73,10 +94,8 @@ guse switch personal
 
 This will:
 
-- Set the Git name/email for the current repository  
-- Rewire the remote origin URL to use the associated SSH host  
-
-<br>
+- Set the Git name/email for the current repository
+- Rewire the remote origin URL to use the associated SSH host
 
 ### Show current Git configuration
 
@@ -84,23 +103,17 @@ This will:
 guse show
 ```
 
-<br>
-
 ### List available profiles
 
 ```bash
 guse list
 ```
 
-<br>
-
 ### List configured SSH hosts (from `~/.ssh/config`)
 
 ```bash
 guse list-ssh
 ```
-
-<br>
 
 ### Update a profile
 
