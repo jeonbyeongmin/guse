@@ -153,8 +153,8 @@ Each profile includes:
 
 ```toml
 [personal]
-name = "Hapbee"
-email = "hapbee@personal.com"
+name = "byeongmin.jeon"
+email = "jeonbyeongmin@personal.com"
 ssh_host = "github-personal"
 ```
 

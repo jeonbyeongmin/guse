@@ -27,6 +27,17 @@ pub fn validate_ssh_host(host: &str) -> Result<(), GitSwitchError> {
     Ok(())
 }
 
+pub fn get_ssh_config_path() -> Result<PathBuf, GitSwitchError> {
+    dirs::home_dir()
+        .map(|home| home.join(".ssh").join("config"))
+        .ok_or_else(|| {
+            GitSwitchError::IoError(std::io::Error::new(
+                std::io::ErrorKind::Other,
+                "Failed to get home directory".to_string(),
+            ))
+        })
+}
+
 pub fn backup_config_file(config_path: &PathBuf) -> Result<(), GitSwitchError> {
     if config_path.exists() {
         let backup_path =

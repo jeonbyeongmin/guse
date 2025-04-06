@@ -19,7 +19,7 @@ use crate::config::{Config, Profile};
 use crate::error::GitSwitchError;
 use crate::git::Git;
 use crate::ui::UI;
-use crate::utils::{backup_config_file, validate_email, validate_ssh_host};
+use crate::utils::{backup_config_file, get_ssh_config_path, validate_email, validate_ssh_host};
 
 /// CLI 인자 정의
 #[derive(Parser, Debug)]
@@ -337,9 +337,7 @@ fn add_profile_interactively(profile_name: &str, config: &Config) -> Result<(), 
         .interact_text()?;
 
     // Get SSH host list
-    let ssh_config = dirs::home_dir()
-        .unwrap_or_else(|| PathBuf::from("."))
-        .join(".ssh/config");
+    let ssh_config = get_ssh_config_path()?;
 
     #[derive(Clone)]
     struct SshHost {
@@ -484,9 +482,7 @@ fn update_profile_interactively(profile_name: &str, config: &Config) -> Result<(
         .interact_text()?;
 
     // Get SSH host list
-    let ssh_config = dirs::home_dir()
-        .unwrap_or_else(|| PathBuf::from("."))
-        .join(".ssh/config");
+    let ssh_config = get_ssh_config_path()?;
 
     #[derive(Clone)]
     struct SshHost {
