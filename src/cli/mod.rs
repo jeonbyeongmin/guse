@@ -2,8 +2,10 @@ pub mod add;
 pub mod delete;
 pub mod list;
 pub mod list_ssh;
+pub mod set_default;
 pub mod show;
 pub mod switch;
+pub mod unset_default; // Added
 pub mod update;
 
 use clap::Parser;
@@ -44,4 +46,10 @@ pub enum Commands {
 
     #[command(name = "update", about = "Update an existing Git profile")]
     Update(update::UpdateCommand),
+
+    #[command(name = "set-default", about = "Set a default Git profile")]
+    SetDefault(set_default::SetDefaultCommand),
+
+    #[command(name = "unset-default", about = "Unset the default Git profile")]
+    UnsetDefault(unset_default::UnsetDefaultCommand), // Added
 }
