@@ -86,26 +86,46 @@ You'll be prompted to enter:
 - Git user.email
 - SSH host alias (auto-detected from `~/.ssh/config`)
 
+### Set a default profile
+
+You can set a global default profile that `guse` will use for certain operations, like `guse switch` when no profile name is specified.
+
+```bash
+guse set-default <profile-name>
+```
+Replace `<profile-name>` with the name of one of your existing profiles (e.g., `guse set-default personal`).
+
+### Unset the default profile
+
+To remove the global default profile setting:
+
+```bash
+guse unset-default
+```
+
 ### Switch to a profile
 
 ```bash
-# Select profile interactively
+# Automatically uses the default profile if set, otherwise prompts for selection
 guse switch
 
-# Specify profile name directly
+# Specify profile name directly, overriding any default
 guse switch personal
 ```
 
 This will:
 
-- Set the Git name/email for the current repository
-- Rewire the remote origin URL to use the associated SSH host
+- Set the Git name/email for the current repository.
+- Rewire the remote origin URL to use the associated SSH host for the selected profile.
+
+If a default profile is configured, running `guse switch` without a profile name will automatically switch to the default. Otherwise, it will prompt you to select a profile from the list.
 
 ### Show current Git configuration
 
 ```bash
 guse show
 ```
+Displays the current Git `user.name` and `user.email` for the repository, the `guse` profile it matches (if any), and the globally configured default `guse` profile (if set).
 
 ### List available profiles
 
