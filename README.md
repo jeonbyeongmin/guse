@@ -32,34 +32,40 @@ Manually updating `user.name`, `user.email`, and remote URLs can be repetitive a
 #### macOS
 
 ```bash
-# Download latest release
-curl -L -o guse https://github.com/jeonbyeongmin/guse/releases/latest/download/guse-macos
+# Download the latest macOS binary from the release page
+curl -LO https://github.com/jeonbyeongmin/guse/releases/latest/download/guse-x86_64-apple-darwin.tar.gz
+
+# Extract the archive
+tar -xzvf guse-x86_64-apple-darwin.tar.gz
 
 # Make it executable
-chmod +x guse
+chmod +x guse-x86_64-apple-darwin
 
-# Add to PATH (optional)
-sudo mv guse /usr/local/bin/
+# (Optional) Move to your PATH
+sudo mv guse-x86_64-apple-darwin /usr/local/bin/guse
 ```
 
 #### Windows
 
-1. Download `guse-windows.exe` from the [latest release page](https://github.com/jeonbyeongmin/guse/releases/latest)
-2. Save the file to your desired location
-3. Rename the file to `guse.exe` (optional)
-4. Add the directory to your system's PATH environment variable (optional)
+1. Download `guse-x86_64-pc-windows-gnu.zip` from the [latest release page](https://github.com/jeonbyeongmin/guse/releases/latest).
+2. Extract the zip file and place `guse-x86_64-pc-windows-gnu.exe` wherever you like.
+3. (Optional) Rename the file to `guse.exe`.
+4. (Optional) Add the folder to your system PATH.
 
 #### Linux
 
 ```bash
-# Download latest release
-curl -L -o guse https://github.com/jeonbyeongmin/guse/releases/latest/download/guse-linux
+# Download the latest Linux binary from the release page
+curl -LO https://github.com/jeonbyeongmin/guse/releases/latest/download/guse-x86_64-unknown-linux-gnu.tar.gz
+
+# Extract the archive
+tar -xzvf guse-x86_64-unknown-linux-gnu.tar.gz
 
 # Make it executable
-chmod +x guse
+chmod +x guse-x86_64-unknown-linux-gnu
 
-# Add to PATH (optional)
-sudo mv guse /usr/local/bin/
+# (Optional) Move to your PATH
+sudo mv guse-x86_64-unknown-linux-gnu /usr/local/bin/guse
 ```
 
 ## Usage
