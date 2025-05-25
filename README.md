@@ -152,7 +152,7 @@ guse delete work
 Profiles are stored in a `.toml` file at:
 
 ```
-~/.git-switch-profiles.toml
+~/.guse-profiles.toml
 ```
 
 Each profile includes:
