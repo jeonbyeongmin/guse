@@ -6,13 +6,12 @@ on:
       - "v*.*.*"
 
 jobs:
-  build:
+  build-linux-windows:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         target:
           - x86_64-unknown-linux-gnu
-          - x86_64-apple-darwin
           - x86_64-pc-windows-gnu
     steps:
       - uses: actions/checkout@v4
@@ -41,8 +40,29 @@ jobs:
             guse-${{ matrix.target }}.tar.gz
             guse-${{ matrix.target }}.zip
             guse-${{ matrix.target }}.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      - name: Build for macOS
+        run: cargo build --release --target x86_64-apple-darwin
+      - name: Prepare artifact
+        run: |
+          cp target/x86_64-apple-darwin/release/guse guse-x86_64-apple-darwin
+          tar -czvf guse-x86_64-apple-darwin.tar.gz guse-x86_64-apple-darwin
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: guse-x86_64-apple-darwin
+          path: |
+            guse-x86_64-apple-darwin.tar.gz
   release:
-    needs: build
+    needs: [build-linux-windows, build-macos]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -56,9 +76,11 @@ jobs:
           files: ./artifacts/**/*.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_unmatched_files: false
+          generate_release_notes: true
       - name: Upload Windows zip
         uses: softprops/action-gh-release@v2
         with:
           files: ./artifacts/**/*.zip
           token: ${{ secrets.GITHUB_TOKEN }}
           fail_on_unmatched_files: false
+          generate_release_notes: true
