@@ -50,7 +50,7 @@ impl Config {
     pub fn new() -> Self {
         let path = dirs::home_dir()
             .unwrap_or_else(|| PathBuf::from("."))
-            .join(".git-switch-profiles.toml");
+            .join(".guse-profiles.toml");
         Self { path }
     }
 
