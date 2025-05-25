@@ -5,6 +5,7 @@ pub mod list_ssh;
 pub mod show;
 pub mod switch;
 pub mod update;
+pub mod add_ssh;
 
 use clap::Parser;
 
@@ -44,4 +45,6 @@ pub enum Commands {
 
     #[command(name = "update", about = "Update an existing Git profile")]
     Update(update::UpdateCommand),
+    #[command(name = "add-ssh", about = "Add a new SSH host to ~/.ssh/config")]
+    AddSsh(add_ssh::AddSshCommand),
 }
