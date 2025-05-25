@@ -3,97 +3,62 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*.*.*"
 
 jobs:
   build:
-    name: Build Release
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        include:
-          - os: ubuntu-latest
-            artifact_name: guse-linux
-          - os: windows-latest
-            artifact_name: guse-windows
-          - os: macos-latest
-            artifact_name: guse-macos
-
+        target:
+          - x86_64-unknown-linux-gnu
+          - x86_64-apple-darwin
+          - x86_64-pc-windows-gnu
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - uses: actions-rs/toolchain@v1
         with:
-          targets: x86_64-unknown-linux-gnu,x86_64-pc-windows-msvc,x86_64-apple-darwin
-
-      - name: Build
-        run: cargo build --release
-
-      - name: Prepare binary
-        shell: bash
+          toolchain: stable
+          override: true
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+      - name: Build with cross
+        run: cross build --release --target ${{ matrix.target }}
+      - name: Prepare artifact
         run: |
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            cp target/release/guse.exe ${{ matrix.artifact_name }}.exe
+          if [ "${{ matrix.target }}" = "x86_64-pc-windows-gnu" ]; then
+            cp target/${{ matrix.target }}/release/guse.exe guse-${{ matrix.target }}.exe
+            7z a guse-${{ matrix.target }}.zip guse-${{ matrix.target }}.exe
           else
-            cp target/release/guse ${{ matrix.artifact_name }}
+            cp target/${{ matrix.target }}/release/guse guse-${{ matrix.target }}
+            tar -czvf guse-${{ matrix.target }}.tar.gz guse-${{ matrix.target }}
           fi
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact_name }}
-          path: ${{ matrix.artifact_name }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
-          if-no-files-found: error
-
+          name: guse-${{ matrix.target }}
+          path: |
+            guse-${{ matrix.target }}.tar.gz
+            guse-${{ matrix.target }}.zip
+            guse-${{ matrix.target }}.exe
   release:
-    name: Create Release
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          path: binaries
-          pattern: guse-*
-
-      - name: List artifacts
-        run: ls -la binaries/
-
+          path: ./artifacts
       - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          body: |
-            ## Binaries
-
-            - `guse-linux` - Linux binary
-            - `guse-windows.exe` - Windows binary
-            - `guse-macos` - macOS binary
-
-            ## Installation
-
-            ### macOS/Linux
-            ```bash
-            curl -L -o guse https://github.com/${{ github.repository }}/releases/latest/download/guse-${{ matrix.os == 'macos-latest' && 'macos' || 'linux' }}
-            chmod +x guse
-            sudo mv guse /usr/local/bin/  # optional
-            ```
-
-            ### Windows
-            1. Download `guse-windows.exe` from the [latest release page](https://github.com/${{ github.repository }}/releases/latest)
-            2. Save the file to your desired location
-            3. Rename to `guse.exe` (optional)
-            4. Add to PATH (optional)
-          files: |
-            binaries/guse-linux
-            binaries/guse-windows.exe
-            binaries/guse-macos
-          draft: false
-          prerelease: false
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          files: ./artifacts/**/*.tar.gz
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_unmatched_files: false
+      - name: Upload Windows zip
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./artifacts/**/*.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_unmatched_files: false
