@@ -364,6 +364,7 @@ dependencies = [
  "regex",
  "serde",
  "shellexpand",
+ "thiserror",
  "toml",
 ]
 
