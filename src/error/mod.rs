@@ -1,40 +1,24 @@
-use std::fmt;
+use thiserror::Error;
 
-#[derive(Debug)]
+#[derive(Debug, Error)]
 pub enum GuseError {
-    IoError(std::io::Error),
-    TomlError(toml::de::Error),
+    #[error("IO Error: {0}")]
+    IoError(#[from] std::io::Error),
+    
+    #[error("TOML Parsing Error: {0}")]
+    TomlError(#[from] toml::de::Error),
+    
+    #[error("Git Command Error: {0}")]
     GitError(String),
+    
+    #[error("Validation Error: {0}")]
     ValidationError(String),
+    
+    #[error("Configuration Error: {0}")]
     ConfigError(String),
-    DialoguerError(dialoguer::Error),
-}
-
-impl fmt::Display for GuseError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            GuseError::IoError(e) => write!(f, "IO Error: {}", e),
-            GuseError::TomlError(e) => write!(f, "TOML Parsing Error: {}", e),
-            GuseError::GitError(e) => write!(f, "Git Command Error: {}", e),
-            GuseError::ValidationError(e) => write!(f, "Validation Error: {}", e),
-            GuseError::ConfigError(e) => write!(f, "Configuration Error: {}", e),
-            GuseError::DialoguerError(e) => write!(f, "Interactive Input Error: {}", e),
-        }
-    }
-}
-
-impl std::error::Error for GuseError {}
-
-impl From<std::io::Error> for GuseError {
-    fn from(err: std::io::Error) -> Self {
-        GuseError::IoError(err)
-    }
-}
-
-impl From<toml::de::Error> for GuseError {
-    fn from(err: toml::de::Error) -> Self {
-        GuseError::TomlError(err)
-    }
+    
+    #[error("Interactive Input Error: {0}")]
+    DialoguerError(#[from] dialoguer::Error),
 }
 
 impl From<toml::ser::Error> for GuseError {
@@ -55,8 +39,7 @@ impl From<crate::git::GitError> for GuseError {
     }
 }
 
-impl From<dialoguer::Error> for GuseError {
-    fn from(err: dialoguer::Error) -> Self {
-        GuseError::DialoguerError(err)
-    }
-}
+#[cfg(test)]
+mod tests;
+
+
